@@ -2,6 +2,7 @@ package com.piegon.DTO;
 import com.piegon.Models.Participants;
 import com.piegon.Models.Tournament;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class PartcipantsDTO {
@@ -16,6 +17,7 @@ public class PartcipantsDTO {
     Date tournamentEndTime;
     Long tournamentId;
     Integer noOfPiegons;
+    BigDecimal prizeAmount;
 
     public String getParticipantCity() {
         return participantCity;
@@ -97,6 +99,14 @@ public class PartcipantsDTO {
         this.noOfPiegons = noOfPiegons;
     }
 
+    public BigDecimal getPrizeAmount() {
+        return prizeAmount;
+    }
+
+    public void setPrizeAmount(BigDecimal prizeAmount) {
+        this.prizeAmount = prizeAmount;
+    }
+
     public void populateDTO(Participants participants)
     {
         if(participants.getParticipantId() != null)
@@ -106,6 +116,7 @@ public class PartcipantsDTO {
 
         this.participantName = participants.getParticipantName();
         this.participantCity = participants.getParticipantCity();
+
         if(participants.getTournament() != null)
         {
             this.tournamentName = participants.getTournament().getTournamentName();
@@ -113,6 +124,11 @@ public class PartcipantsDTO {
             this.tournamentEndTime = participants.getTournament().getTournamentEndTime();
             this.tournamentStartTime = participants.getTournament().getTournamentStartTime();
             this.tournamentId = participants.getTournament().getTournamentId();
+        }
+
+        if(participants.getPrizeMoney() != null)
+        {
+            this.prizeAmount = participants.getPrizeMoney();
         }
     }
 
@@ -124,6 +140,10 @@ public class PartcipantsDTO {
             participants.setParticipantId(this.participantId);
         }
         participants.setParticipantName(this.participantName);
+        if(this.prizeAmount != null)
+        {
+            participants.setPrizeMoney(this.prizeAmount);
+        }
         participants.setParticipantPosition(this.participantPosition);
         participants.setParticipantCity(this.participantCity);
         if(this.tournamentId != null)

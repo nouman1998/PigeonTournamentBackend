@@ -3,6 +3,7 @@ package com.piegon.Models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
@@ -24,6 +25,9 @@ public class Participants {
 
     @Column(name = "participant_city")
     String participantCity;
+
+    @Column(name = "prize_money")
+    BigDecimal prizeMoney;
 
     @JsonIgnore
     @ManyToOne
@@ -48,7 +52,15 @@ public class Participants {
 
     }
 
-
+    public Participants(Long participantId, String participantName, String participantPosition, String participantCity, BigDecimal prizeMoney, Tournament tournament, Set<Pigeon> pigeons) {
+        this.participantId = participantId;
+        this.participantName = participantName;
+        this.participantPosition = participantPosition;
+        this.participantCity = participantCity;
+        this.prizeMoney = prizeMoney;
+        this.tournament = tournament;
+        this.pigeons = pigeons;
+    }
 
     public Long getParticipantId() {
         return participantId;
@@ -98,5 +110,11 @@ public class Participants {
         this.pigeons = pigeons;
     }
 
+    public BigDecimal getPrizeMoney() {
+        return prizeMoney;
+    }
 
+    public void setPrizeMoney(BigDecimal prizeMoney) {
+        this.prizeMoney = prizeMoney;
+    }
 }
