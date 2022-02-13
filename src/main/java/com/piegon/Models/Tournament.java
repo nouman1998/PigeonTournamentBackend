@@ -1,8 +1,9 @@
 package com.piegon.Models;
 import java.io.Serializable;
-import java.util.Date;
+import java.util.*;
 import java.util.Set;
 import javax.persistence.*;
+
 
 @Table(name = "TOURNAMENT")
 @Entity
@@ -29,7 +30,7 @@ public class Tournament implements Serializable
     private String city;
 
     @OneToMany(mappedBy="tournament")
-    private Set<Participants> participants;
+    private List<Participants> participants;
 
 
     @ManyToOne
@@ -106,11 +107,11 @@ public class Tournament implements Serializable
         this.city = city;
     }
 
-    public Set<Participants> getParticipants() {
+    public List<Participants> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(Set<Participants> participants) {
+    public void setParticipants(List<Participants> participants) {
         this.participants = participants;
     }
 

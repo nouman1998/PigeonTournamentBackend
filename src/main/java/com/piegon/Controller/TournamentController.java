@@ -1,6 +1,7 @@
 package com.piegon.Controller;
 
 import com.piegon.DTO.TournamentDTO;
+import com.piegon.DTO.TournamentWinnerDTO;
 import com.piegon.Models.Category;
 import com.piegon.Models.Tournament;
 import com.piegon.Service.CategoryService;
@@ -34,19 +35,22 @@ public class TournamentController {
 
     @PostMapping("/{categoryId}")
     public TournamentDTO addTournament(@PathVariable("categoryId") Long categoryId, @RequestBody TournamentDTO tournamentDTO) {
-        return this.tournamentService.addTournament(categoryId , tournamentDTO);
+        return this.tournamentService.addTournament(categoryId, tournamentDTO);
     }
 
     @GetMapping("/{categoryId}")
-    public List<TournamentDTO> findTournamentByCategoryId(@PathVariable("categoryId") Long categoryId)
-    {
+    public List<TournamentDTO> findTournamentByCategoryId(@PathVariable("categoryId") Long categoryId) {
         return this.categoryService.findByCategoryId(categoryId);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteTournament(@PathVariable("id") Long id)
-    {
+    public ResponseEntity deleteTournament(@PathVariable("id") Long id) {
         return this.tournamentService.deleteTournament(id);
+    }
+
+    @PutMapping("/endTournament/{tournamentId}")
+    public List<TournamentWinnerDTO> endTournament(@PathVariable("tournamentId") Long tournamentId) {
+        return this.tournamentService.endTournament(tournamentId);
     }
 
 }

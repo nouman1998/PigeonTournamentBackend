@@ -1,9 +1,11 @@
 package com.piegon.DTO;
 
 import com.piegon.Models.Category;
+import com.piegon.Models.Participants;
 import com.piegon.Models.Tournament;
 
 import java.util.Date;
+import java.util.stream.Collectors;
 
 public class TournamentDTO {
 
@@ -17,6 +19,7 @@ public class TournamentDTO {
     Long categoryId;
     Date tournamentStartTime;
     Date tournamentEndTime;
+    String tournamentWinnerName;
 
     public TournamentDTO() {
     }
@@ -96,7 +99,14 @@ public class TournamentDTO {
         }
 
         if (tournament != null && tournament.getTournamentWinner() != null) {
+
             this.tournamentWinner = tournament.getTournamentWinner();
+            java.util.List<Participants> list = tournament.getParticipants().stream().filter(participants -> participants.getParticipantId() == this.tournamentWinner)
+                    .collect(Collectors.toList());
+            if(list.size()>0)
+            {
+                this.tournamentWinnerName = list.get(0).getParticipantName();
+            }
         }
 
         this.tournamentStartTime= tournament.getTournamentStartTime();
@@ -142,5 +152,13 @@ public class TournamentDTO {
 
     public void setTournamentEndTime(Date tournamentEndTime) {
         this.tournamentEndTime = tournamentEndTime;
+    }
+
+    public String getTournamentWinnerName() {
+        return tournamentWinnerName;
+    }
+
+    public void setTournamentWinnerName(String tournamentWinnerName) {
+        this.tournamentWinnerName = tournamentWinnerName;
     }
 }
