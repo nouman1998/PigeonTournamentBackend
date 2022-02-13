@@ -56,6 +56,8 @@ public class Tournament implements Serializable
         this.city = city;
     }
 
+
+
     public Long getTournamentId() {
         return tournamentId;
     }

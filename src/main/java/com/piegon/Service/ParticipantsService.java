@@ -56,7 +56,7 @@ public class ParticipantsService {
 
             Participants participants1 = this.participantsRepository.save(participants);
 
-            for (int i = 0; i < partcipantsDTO.getNoOfPiegons(); i++) {
+            for (int i = 0; i < tournamentOptional.get().getCategory().getNoOfPigeons(); i++) {
                 pigeon = new Pigeon();
                 pigeon.setLanded(Boolean.FALSE);
                 pigeon.setStartDate(tournamentOptional.get().getTournamentStartTime());

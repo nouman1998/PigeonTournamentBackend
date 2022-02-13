@@ -5,6 +5,7 @@ import com.piegon.Models.Category;
 public class CategoryDTO {
     Long categoryId;
     String categoryName;
+    Integer noOfPigeons ;
 
     public CategoryDTO() {
     }
@@ -33,6 +34,7 @@ public class CategoryDTO {
     public void populateDTO(Category category){
         this.categoryId = category.getCategoryId();
         this.categoryName = category.getCategoryName();
+        this.noOfPigeons = category.getNoOfPigeons();
     }
 
     public Category populateDomainObject()
@@ -43,6 +45,15 @@ public class CategoryDTO {
             category.setCategoryId(this.categoryId);
         }
         category.setCategoryName(this.categoryName);
+        category.setNoOfPigeons(this.noOfPigeons);
         return category;
+    }
+
+    public Integer getNoOfPigeons() {
+        return noOfPigeons;
+    }
+
+    public void setNoOfPigeons(Integer noOfPigeons) {
+        this.noOfPigeons = noOfPigeons;
     }
 }

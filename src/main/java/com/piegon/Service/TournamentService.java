@@ -7,8 +7,11 @@ import com.piegon.Models.Tournament;
 import com.piegon.Repository.CategoryRepository;
 import com.piegon.Repository.TournamentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,26 +47,26 @@ public class TournamentService {
 
     }
 
-    public List<Tournament> findAllTournamentsModel() {
-//        TournamentDTO tournamentDTO;
-//        List<TournamentDTO> tournamentDTOS = new ArrayList<>(0);
+    public List<TournamentDTO> findAllTournamentsModel() {
+        TournamentDTO tournamentDTO;
+        List<TournamentDTO> tournamentDTOS = new ArrayList<>(0);
         List<Tournament> tournaments = new ArrayList<>();
         try {
 
             tournaments = this.tournamentRepository.findAll();
-//            if (tournaments != null && tournaments.size() > 0) {
-//
-//                for (Tournament tournament : tournaments) {
-//                    tournamentDTO = new TournamentDTO();
-//                    tournamentDTO.populateDTO(tournament);
-//                    tournamentDTOS.add(tournamentDTO);
-//                }
-//            }
+            if (tournaments != null && tournaments.size() > 0) {
+
+                for (Tournament tournament : tournaments) {
+                    tournamentDTO = new TournamentDTO();
+                    tournamentDTO.populateDTO(tournament);
+                    tournamentDTOS.add(tournamentDTO);
+                }
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
 
-        return tournaments;
+        return tournamentDTOS;
 
     }
 
@@ -86,4 +89,15 @@ public class TournamentService {
     }
 
 
+    public ResponseEntity deleteTournament(Long id) {
+        try {
+            Tournament t = this.tournamentRepository.findById(id).get();
+            this.tournamentRepository.deleteById(id);
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
 }

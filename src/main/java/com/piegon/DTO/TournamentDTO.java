@@ -86,6 +86,7 @@ public class TournamentDTO {
     }
 
     public void populateDTO(Tournament tournament) {
+        this.tournamentId = tournament.getTournamentId();
         this.tournamentCity = tournament.getCity();
         this.tournamentName = tournament.getTournamentName();
 

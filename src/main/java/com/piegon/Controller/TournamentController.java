@@ -6,6 +6,7 @@ import com.piegon.Models.Tournament;
 import com.piegon.Service.CategoryService;
 import com.piegon.Service.TournamentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class TournamentController {
     }
 
     @GetMapping("/all")
-    public List<Tournament> getAllTournaments() {
+    public List<TournamentDTO> getAllTournaments() {
         return this.tournamentService.findAllTournamentsModel();
     }
 
@@ -40,6 +41,12 @@ public class TournamentController {
     public List<TournamentDTO> findTournamentByCategoryId(@PathVariable("categoryId") Long categoryId)
     {
         return this.categoryService.findByCategoryId(categoryId);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteTournament(@PathVariable("id") Long id)
+    {
+        return this.tournamentService.deleteTournament(id);
     }
 
 }

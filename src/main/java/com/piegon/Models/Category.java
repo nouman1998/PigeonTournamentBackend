@@ -19,6 +19,8 @@ public class Category {
 
     String categoryName;
 
+    @Column(name = "TOTAL_PIGEONS")
+    Integer noOfPigeons;
     public Category() {
     }
 
@@ -49,5 +51,14 @@ public class Category {
 
     public void setTournaments(Set<Tournament> tournaments) {
         this.tournaments = tournaments;
+    }
+
+
+    public Integer getNoOfPigeons() {
+        return noOfPigeons;
+    }
+
+    public void setNoOfPigeons(Integer noOfPigeons) {
+        this.noOfPigeons = noOfPigeons;
     }
 }
