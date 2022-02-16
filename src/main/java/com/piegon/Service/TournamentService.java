@@ -158,18 +158,113 @@ public class TournamentService {
                     collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
             System.out.println(sortedMap);
-            Long id = (Long) sortedMap.keySet().toArray()[sortedMap.size()-1];
-            this.tournamentRepository.updateTournamentWinner(id,tournamentId);
+            Long id = (Long) sortedMap.keySet().toArray()[sortedMap.size() - 1];
+            this.tournamentRepository.updateTournamentWinner(id, tournamentId);
             for (TournamentWinnerDTO tournamentWinnerDTO : tournamentWinnerDTOS) {
-                if(tournamentWinnerDTO.getParticipantId() == id)
-                {
+                if (tournamentWinnerDTO.getParticipantId() == id) {
                     tournamentWinnerDTO.setWinner(Boolean.TRUE);
                 }
             }
             return tournamentWinnerDTOS;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-         }
+        }
+
+    }
+
+
+    public List<TournamentWinnerDTO> findDetailByTournamentId(Long tournamentId) {
+
+        try {
+
+            Optional<Tournament> tournamentOptional = this.tournamentRepository.findById(tournamentId);
+            List<TournamentWinnerDTO> tournamentWinnerDTOS = new ArrayList<>(0);
+            if (tournamentOptional.isPresent()) {
+
+                Tournament t = tournamentOptional.get();
+                List<Participants> participants = t.getParticipants();
+
+                TournamentWinnerDTO tournamentWinnerDTO = null;
+
+                for (Participants participant : participants) {
+
+                    AtomicReference<Integer> remainingPigeons = new AtomicReference<Integer>();
+                    remainingPigeons.set(0);
+
+                    Long totalHoursOfParticipant = 0l;
+                    tournamentWinnerDTO = new TournamentWinnerDTO();
+                    tournamentWinnerDTO.setTournamentCity(t.getCity());
+                    tournamentWinnerDTO.setTournamentName(t.getTournamentName());
+                    tournamentWinnerDTO.setEndDate(t.getTournamentEndTime());
+                    tournamentWinnerDTO.setStartDate(t.getTournamentStartTime());
+                    tournamentWinnerDTO.setParticipantName(participant.getParticipantName());
+                    tournamentWinnerDTO.setParticipantId(participant.getParticipantId());
+                    tournamentWinnerDTO.setTotalPigeons(participants.size() * t.getCategory().getNoOfPigeons());
+                    tournamentWinnerDTO.setLofted(participants.size());
+
+                    Map<Long, Long> totalHours = new HashMap<>();
+                    Set<Pigeon> pigeons = participant.getPigeons();
+                    pigeons.stream().forEach(pigeon -> {
+                        if (pigeon != null && pigeon.getStartDate() != null && pigeon.getEndDate() != null) {
+                            Long diff = pigeon.getEndDate().getTime() - pigeon.getStartDate().getTime();
+                            totalHours.put(pigeon.getPigeonId(), TimeUnit.MILLISECONDS.toSeconds(diff));
+
+                        } else {
+                            remainingPigeons.set(remainingPigeons.get() + 1);
+                            ;
+                        }
+
+                    });
+
+                    tournamentWinnerDTO.setRemainingPigeons(remainingPigeons.get());
+                    tournamentWinnerDTO.setMap(totalHours);
+                    tournamentWinnerDTOS.add(tournamentWinnerDTO);
+
+
+                }
+
+
+            }
+            Map<Long, Integer> winner = new HashMap<>();
+            tournamentWinnerDTOS.forEach(tournamentWinnerDTO -> {
+                Integer sum = 0;
+                for (Map.Entry<Long, Long> entry : tournamentWinnerDTO.getMap().entrySet()) {
+                    sum += entry.getValue().intValue();
+                }
+                winner.put(tournamentWinnerDTO.getParticipantId(), sum);
+            });
+
+            Map<Long, Integer> sortedMap = winner.entrySet().
+                    stream().
+                    sorted(Map.Entry.comparingByValue()).
+                    collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+            System.out.println(sortedMap);
+            Long id = (Long) sortedMap.keySet().toArray()[sortedMap.size() - 1];
+            this.tournamentRepository.updateTournamentWinner(id, tournamentId);
+            for (TournamentWinnerDTO tournamentWinnerDTO : tournamentWinnerDTOS) {
+                if (tournamentWinnerDTO.getParticipantId() == id) {
+                    tournamentWinnerDTO.setWinner(Boolean.TRUE);
+                }
+            }
+            return tournamentWinnerDTOS;
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    public List<TournamentWinnerDTO> findLatestTournament() {
+
+        List<TournamentWinnerDTO> empty = new ArrayList<>(0);
+        Optional<Tournament> t = this.tournamentRepository.findLastTournament();
+        if(t.isPresent())
+        {
+            return this.findDetailByTournamentId(t.get().getTournamentId());
+        }
+        else {
+            return empty;
+        }
 
     }
 }

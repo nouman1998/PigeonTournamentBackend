@@ -53,4 +53,17 @@ public class TournamentController {
         return this.tournamentService.endTournament(tournamentId);
     }
 
+    @GetMapping("/detail/{tournamentId}")
+    public  List<TournamentWinnerDTO> findDetailByTournamentId(@PathVariable("tournamentId") Long tournamentId)
+    {
+        return  this.tournamentService.findDetailByTournamentId(tournamentId);
+    }
+
+    @GetMapping("/latest/tournament")
+    public List<TournamentWinnerDTO> findLastTournament()
+    {
+        return this.tournamentService.findLatestTournament();
+    }
+
+
 }
