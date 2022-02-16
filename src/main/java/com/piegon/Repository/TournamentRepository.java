@@ -18,6 +18,6 @@ public interface TournamentRepository extends JpaRepository<Tournament , Long> {
     @Query(value = "update tournament set tournament_winner = :winnerId where tournament_id = :tournamentId",nativeQuery = true)
     public  void updateTournamentWinner(@Param("winnerId") Long winnerId ,@Param("tournamentId") Long tournamentId);
 
-    @Query(value = "SELECT * FROM tournament ORDER BY  create_date_time DESC")
-    Optional<Tournament> findLastTournament();
+    @Query(value = "SELECT * FROM tournament ORDER BY  create_date_time DESC",nativeQuery = true)
+    public Optional<Tournament> findLastTournament();
 }
