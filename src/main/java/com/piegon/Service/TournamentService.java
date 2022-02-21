@@ -222,31 +222,36 @@ public class TournamentService {
 
 
                 }
+                if(participants.size()>0)
+                {
+                	
+                	Map<Long, Integer> winner = new HashMap<>();
+                    tournamentWinnerDTOS.forEach(tournamentWinnerDTO1 -> {
+                        Integer sum = 0;
+                        for (Map.Entry<Long, Long> entry : tournamentWinnerDTO1.getMap().entrySet()) {
+                            sum += entry.getValue().intValue();
+                        }
+                        winner.put(tournamentWinnerDTO1.getParticipantId(), sum);
+                    });
 
+                    Map<Long, Integer> sortedMap = winner.entrySet().
+                            stream().
+                            sorted(Map.Entry.comparingByValue()).
+                            collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+                    System.out.println(sortedMap);
+                    Long id = (Long) sortedMap.keySet().toArray()[sortedMap.size() - 1];
+                    this.tournamentRepository.updateTournamentWinner(id, tournamentId);
+                    for (TournamentWinnerDTO tournamentWinnerDTO2 : tournamentWinnerDTOS) {
+                        if (tournamentWinnerDTO2.getParticipantId() == id) {
+                            tournamentWinnerDTO2.setWinner(Boolean.TRUE);
+                        }
+                    }
+                }
+                    
 
             }
-            Map<Long, Integer> winner = new HashMap<>();
-            tournamentWinnerDTOS.forEach(tournamentWinnerDTO -> {
-                Integer sum = 0;
-                for (Map.Entry<Long, Long> entry : tournamentWinnerDTO.getMap().entrySet()) {
-                    sum += entry.getValue().intValue();
-                }
-                winner.put(tournamentWinnerDTO.getParticipantId(), sum);
-            });
-
-            Map<Long, Integer> sortedMap = winner.entrySet().
-                    stream().
-                    sorted(Map.Entry.comparingByValue()).
-                    collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-
-            System.out.println(sortedMap);
-            Long id = (Long) sortedMap.keySet().toArray()[sortedMap.size() - 1];
-            this.tournamentRepository.updateTournamentWinner(id, tournamentId);
-            for (TournamentWinnerDTO tournamentWinnerDTO : tournamentWinnerDTOS) {
-                if (tournamentWinnerDTO.getParticipantId() == id) {
-                    tournamentWinnerDTO.setWinner(Boolean.TRUE);
-                }
-            }
+           
             return tournamentWinnerDTOS;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
